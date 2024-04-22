@@ -2,7 +2,7 @@ import "./App.css";
 import io from "socket.io-client";
 import { useState } from "react";
 import Chat from "./Chat";
-import Model from "./Model.js";
+// import Model from "./model.js";
 
 const socket = io.connect("http://localhost:3001");
 
@@ -42,7 +42,7 @@ function App() {
       ) : (
         <Chat socket={socket} username={username} room={room} />
       )}
-      <Model />
+      {/* <Model /> */}
     </div>
   );
 }

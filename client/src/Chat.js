@@ -1,12 +1,14 @@
 import React, { useEffect, useState } from "react";
 import ScrollToBottom from "react-scroll-to-bottom";
+import moderateMessage from "./validate";
 
 function Chat({ socket, username, room }) {
   const [currentMessage, setCurrentMessage] = useState("");
   const [messageList, setMessageList] = useState([]);
 
   const sendMessage = async () => {
-    if (currentMessage !== "") {
+    const isToxic = await moderateMessage(currentMessage)
+    if (currentMessage !== "" && !isToxic) {
       const messageData = {
         room: room,
         author: username,
@@ -20,6 +22,9 @@ function Chat({ socket, username, room }) {
       await socket.emit("send_message", messageData);
       setMessageList((list) => [...list, messageData]);
       setCurrentMessage("");
+    }
+    else {
+      alert('Your message contains toxic content. Please revise.')
     }
   };
 

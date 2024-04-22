@@ -16,7 +16,7 @@ export const Model = () => {
     console.log("Function loadModel Called..");
     try {
       console.log("Try called");
-      const threshold = 0.9;
+      const threshold = 0.5;
       setToxicityModel(await toxicity.load(threshold));
       console.log("Model loaded");
     } catch (error) {
