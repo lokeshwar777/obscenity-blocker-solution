@@ -35,15 +35,19 @@ function Chat({ socket, username, room }) {
   }, [socket]);
 
   return (
+    // <div className="white_box">
     <div className="chat-window">
       <div className="chat-header">
-        <p>Live Chat</p>
+        <p align="center">Chat Window</p>
+        
+
       </div>
       <div className="chat-body">
         <ScrollToBottom className="message-container">
-          {messageList.map((messageContent) => {
+          {messageList.map((messageContent, index) => {
             return (
               <div
+                key={index}
                 className="message"
                 id={username === messageContent.author ? "you" : "other"}
               >
@@ -65,7 +69,7 @@ function Chat({ socket, username, room }) {
         <input
           type="text"
           value={currentMessage}
-          placeholder="Hey..."
+          placeholder="Message here..."
           onChange={(event) => {
             setCurrentMessage(event.target.value);
           }}
@@ -73,9 +77,10 @@ function Chat({ socket, username, room }) {
             event.key === "Enter" && sendMessage();
           }}
         />
-        <button onClick={sendMessage}>&#9658;</button>
+        <button onClick={sendMessage}>&#10148;</button>
       </div>
     </div>
+    // </div>
   );
 }
 

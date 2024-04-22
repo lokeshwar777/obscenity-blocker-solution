@@ -20,12 +20,20 @@ function App() {
 
   return (
     <div className="App">
+      <div className="bg">
+        <div className="ripple-background"></div>
+        <div className="circle xxlarge shade1"></div>
+        <div className="circle xlarge shade2"></div>
+        <div className="circle large shade3"></div>
+        <div className="circle medium shade4"></div>
+        <div className="circle small shade5"></div>
+      </div>
       {!showChat ? (
         <div className="joinChatContainer">
           <h3>Join A Chat</h3>
           <input
             type="text"
-            placeholder="John..."
+            placeholder="Username"
             onChange={(event) => {
               setUsername(event.target.value);
             }}

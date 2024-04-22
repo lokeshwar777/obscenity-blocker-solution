@@ -3,12 +3,11 @@ import * as toxicity from '@tensorflow-models/toxicity';
 let toxicityModel
 
 const loadModel = async () => {
-    console.log("Function loadModel Called..");
     try {
-        console.log("Try called");
+        console.log("2 - Loading model...");
         const threshold = 0.9;
         toxicityModel = await toxicity.load(threshold)
-        console.log("Model loaded");
+        console.log("3 - Model loaded");
     } catch (error) {
         console.error("Error loading model:", error);
     }
@@ -20,13 +19,12 @@ const moderateMessage = async (message) => {
         toxicityModel = model
     })
 
-    console.log('moderateMessage called..')
+    console.log('1 - toxicityModel: ', toxicityModel);
     if (!toxicityModel) {
         await loadModel();
-        console.log("Loaded model in moderateMessage");
-        // return false // Model not loaded yet
+        console.log("4 - Loaded model in moderateMessage");
     }
-    console.log(message)
+    console.log("5 - ", message)
     const predictions = await toxicityModel.classify(message)
     // Check if any toxic label is detected
     for (const prediction of predictions) {

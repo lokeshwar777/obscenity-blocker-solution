@@ -1,64 +1,102 @@
 .App {
   width: 100vw;
   height: 100vh;
-  background: #fff;
+  background: #3399FF;
   color: #212121;
   font-family: "Open Sans", sans-serif;
   display: grid;
   place-items: center;
+  /* padding-top: 20%; */
 }
+
+/* .white_box{
+  width: 50%; 
+  height: 54.5%; 
+  background: none;
+  position: absolute; 
+  top: 50%; left: 50%; 
+  transform: translate(-50%, -50%);
+  /* justify-items: center; }
+  */
+
 body {
   margin: 0%;
   padding: 0%;
 }
 @import url("https://fonts.googleapis.com/css?family=Open+Sans:300,400,700");
-
+.bg{
+  z-index: 0;
+}
 .joinChatContainer {
-  display: flex;
+  background-color: white;
+  border-radius: 10px;
+  position: absolute; 
+  top: 50%; 
+  left: 50%; 
+  transform: translate(-50%, -50%);
+  display: auto;
+  height: 400px;
+  width: 400px;
   flex-direction: column;
   text-align: center;
+  box-shadow: 0 0 40px black;
+  
 }
 
 .joinChatContainer h3 {
   font-size: 2.5rem;
   margin-bottom: 1rem;
+  /* font-weight: bold; */
+  
 }
 .joinChatContainer input {
-  width: 210px;
+  width: 310px;
   height: 40px;
   margin: 7px;
-  border: 2px solid #43a047;
-  border-radius: 5px;
+  /* border: 2px solid #43a047; */
+  border: none;
+  /* border-radius: 5px; */
   padding: 5px;
   font-size: 16px;
+  border-bottom: 1px black solid;
 }
 
 .joinChatContainer button {
-  width: 225px;
+  width: 310px;
   height: 50px;
-  margin: 7px;
+  margin: 50px;
   border: none;
   border-radius: 5px;
   padding: 5px;
   font-size: 16px;
   background: #43a047;
-  color: #fff;
+  opacity: 0.9;
+  color: white;
   cursor: pointer;
+
 }
 
 .joinChatContainer button:hover {
-  background: #2e7d32;
+  transition: 0.9s;
+  opacity: 1;
+  border: 1px black solid;
+  font-size: 25px;
 }
 
 .chat-window {
-  width: 300px;
-  height: 420px;
+  width: 50%; /*300px*/
+  height: 100vh; /*420px*/
+  /* top: 50%;  */
+  /* left: 50%;  */
+  /* transform: translate(-50%, -50%); */
+  z-index: 1;
 }
 
 .chat-window p {
   margin: 0;
 }
 .chat-window .chat-header {
+  margin: auto;
   height: 45px;
   border-radius: 6px;
   background: #263238;
@@ -68,16 +106,17 @@ body {
 .chat-window .chat-header p {
   display: block;
   padding: 0 1em 0 2em;
-  color: #fff;
+    color: #fff;
   font-weight: 700;
   line-height: 45px;
 }
-
+/*Body and outside for box box box*/
 .chat-window .chat-body {
+  margin: 2px;
   height: calc(450px - (45px + 70px));
-  border: 1px solid #263238;
-  background: #fff;
-
+  border: 1px solid black;
+  border-radius: 10px;
+  background: white;
   position: relative;
 }
 .chat-window .chat-body .message-container {
@@ -89,6 +128,7 @@ body {
 
 .chat-window .chat-body .message-container::-webkit-scrollbar {
   display: none;
+
 }
 .chat-window .chat-body .message {
   height: auto;
@@ -96,18 +136,21 @@ body {
   display: flex;
 }
 
+
+/*Can change, chat window Color */
+/*Receiver colors*/
 .chat-window .chat-body .message .message-content {
   width: auto;
   height: auto;
-  min-height: 40px;
-  max-width: 120px;
-  background-color: #43a047;
+  min-height: 42px;
+  max-width: 350px;
+  background-color: #3399FF;
   border-radius: 5px;
   color: white;
   display: flex;
   align-items: center;
-  margin-right: 5px;
-  margin-left: 5px;
+  margin-right: 15px;
+  margin-left: 15px;
   padding-right: 5px;
   padding-left: 5px;
   overflow-wrap: break-word;
@@ -131,9 +174,10 @@ body {
   justify-content: flex-end;
 }
 
+/*Sender chat colors.*/
 #other .message-content {
   justify-content: flex-end;
-  background-color: cornflowerblue;
+  background-color: #43a047;
 }
 
 #other .message-meta {
@@ -149,12 +193,15 @@ body {
 .chat-window .chat-body .message .message-meta {
   display: flex;
   font-size: 12px;
+  padding-left: 15px;
+  padding-right: 15px;
 }
 
 .chat-window .chat-footer {
-  height: 40px;
+  height: 50px;
   border: 1px solid #263238;
-  border-top: none;
+  border-radius: 10px;
+  /*border-top: none;*/
   display: flex;
 }
 
@@ -164,7 +211,8 @@ body {
   border: 0;
   padding: 0 0.7em;
   font-size: 1em;
-  border-right: 1px dotted #607d8b;
+  /* border: 1px solid #FF671F; */
+  border-radius: 10px 0px 0px 10px;
 
   outline: none;
   font-family: "Open Sans", sans-serif;
@@ -180,12 +228,98 @@ body {
   background: transparent;
   outline: none;
   font-size: 25px;
-  color: lightgray;
+  color: #3399FF;
+  background-color: white;
+  /* border: 2px orange solid; */
+  border-radius: 0px 10px 10px 0px;
 }
 
 .chat-window .chat-footer button:hover {
-  color: #43a047;
+  background: #3399FF;
+  transition: 1s;
+  color: white;
+    
 }
 .hide {
   opacity: 0 !important;
+}
+
+
+/* Background CSS for the JOIN CHAT PAGE */
+.circle{
+  position: absolute;
+  border-radius: 50%;
+  background: white;
+  animation: ripple 20s infinite;
+  box-shadow: 0px 0px 1px 0px #508fb9;
+  position: fixed; /*used to fix the div in place, avoiding page resizing and automatic extenstion of page*/
+  z-index: 1; /*used for fixing the position under the login_box in bg.css*/
+}
+
+.small{
+  width: 200px;
+  height: 200px;
+  left: -100px;
+  bottom: -100px;
+}
+
+.medium{
+  width: 400px;
+  height: 400px;
+  left: -200px;
+  bottom: -200px;
+}
+
+.large{
+  width: 600px;
+  height: 600px;
+  left: -300px;
+  bottom: -300px;
+}
+
+.xlarge{
+  width: 800px;
+  height: 800px;
+  left: -400px;
+  bottom: -400px;
+}
+
+.xxlarge{
+  width: 1000px;
+  height: 1000px;
+  left: -500px;
+  bottom: -500px;
+}
+
+.shade1{
+  opacity: 0.2;
+}
+.shade2{
+  opacity: 0.5;
+}
+
+.shade3{
+  opacity: 0.7;
+}
+
+.shade4{
+  opacity: 0.8;
+}
+
+.shade5{
+  opacity: 0.9;
+}
+
+@keyframes ripple{
+  0%{
+    transform: scale(0.8);
+  }
+  
+  50%{
+    transform: scale(1.2);
+  }
+  
+  100%{
+    transform: scale(0.8);
+  }
 }
