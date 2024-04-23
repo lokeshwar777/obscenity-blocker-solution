@@ -327,3 +327,8 @@ body {
     transform: scale(0.8);
   }
 }
+
+#upload-image {
+  min-width: 50px;
+  max-width: 100px;
+}

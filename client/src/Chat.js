@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from "react";
 import ScrollToBottom from "react-scroll-to-bottom";
-import moderateMessage from "./validate";
-import { image } from "@tensorflow/tfjs-core";
+import moderateMessage from "./validateText";
 
 function Chat({ socket, username, room }) {
   const [currentMessage, setCurrentMessage] = useState("");
@@ -76,7 +75,13 @@ function Chat({ socket, username, room }) {
     // <div className="white_box">
     <div className="chat-window">
       <div className="chat-header">
-        <p align="center">Chat Window</p>
+        {/*<p align="center">CHAT ROOM <span>{room}</span></p>*/}
+        <p align="center">CHAT ROOM <span style={{ color: "#FFE5B4", float: "right" }}>{room}</span>
+
+          <span style={{ color: "#FFE5B4", float: "left" }}>Chatting as: {username}</span>
+        </p>
+
+
       </div>
       <div className="chat-body">
         <ScrollToBottom className="message-container">
@@ -90,12 +95,12 @@ function Chat({ socket, username, room }) {
                 <div>
                   <div className="message-content">
                     <p>{messageContent.message}</p>
-                    {messageContent.image && console.log(messageContent)}
                     {messageContent.image && <img id="upload-image" src={messageContent.image} alt="" />}
                   </div>
                   <div className="message-meta">
                     <p id="time">{messageContent.time}</p>
                     <p id="author">{messageContent.author}</p>
+                    {/*<p id="room">{messageContent.room}</p>*/}
                   </div>
                 </div>
               </div>
