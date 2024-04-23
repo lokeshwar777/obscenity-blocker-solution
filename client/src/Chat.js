@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import ScrollToBottom from "react-scroll-to-bottom";
 import moderateMessage from "./validateText";
+import { toast} from "react-toastify"
 
 function Chat({ socket, username, room }) {
   const [currentMessage, setCurrentMessage] = useState("");
@@ -26,7 +27,7 @@ function Chat({ socket, username, room }) {
       setCurrentMessage("");
     }
     else {
-      alert('Your message contains toxic content. Please revise.')
+      toast.error('Your message contains toxic content. Please revise.')
     }
   };
 
