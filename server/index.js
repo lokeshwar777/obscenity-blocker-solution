@@ -26,6 +26,12 @@ io.on("connection", (socket) => {
     socket.to(data.room).emit("receive_message", data);
   });
 
+  socket.on('upload_image', function (data) {
+    console.log('3 - Image uploaded.');
+    socket.to(data.room).emit('receive_image', data);
+    // socket.emit('receive_image', data);
+  });
+
   socket.on("disconnect", () => {
     console.log("User Disconnected", socket.id);
   });
