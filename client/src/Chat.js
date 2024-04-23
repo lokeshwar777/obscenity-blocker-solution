@@ -1,7 +1,8 @@
 import React, { useEffect, useState } from "react";
 import ScrollToBottom from "react-scroll-to-bottom";
 import moderateMessage from "./validateText";
-import { toast} from "react-toastify"
+import { toast } from "react-toastify"
+import axios from 'axios'
 
 function Chat({ socket, username, room }) {
   const [currentMessage, setCurrentMessage] = useState("");
@@ -31,25 +32,53 @@ function Chat({ socket, username, room }) {
     }
   };
 
+  const verifyImage = async (image) => {
+    const formData = new FormData();
+    formData.append("providers", "google");
+    formData.append("file", image);
+
+    try {
+      const response = await axios.post("https://api.edenai.run/v2/image/explicit_content", formData, {
+        headers: {
+          'Content-Type': 'multipart/form-data',
+          'Authorization': 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjoiNzBlNTg1Y2ItMmVhMC00YzNhLWIyYjctOTdlNTcyNzFmOWVlIiwidHlwZSI6ImFwaV90b2tlbiJ9.O69hZ8NqtxclmsYj0vxzrD18gjc1jjxeT4rKxCjvSaU' // Add your API access token here
+        }
+      });
+      // console.log(response.data);
+
+      // Process the response and determine if the image should be blocked
+      const blocked = response.data.google?.nsfw_likelihood >= 3 || response.data['eden-ai']?.nsfw_likelihood >= 3;
+      return !blocked
+
+    } catch (error) {
+      console.error(error);
+      // toast.error('Error processing image. Please try again.');
+    }
+  }
+
   const handleImageUpload = async (event) => {
     console.log('1 - Image uploaded function');
     const file = event.target.files[0];
     if (file) {
-      const reader = new FileReader();
-      reader.onloadend = async () => {
-        console.log('2 - Image emitted to upload_image', reader.result);
-        await socket.emit("upload_image", { room: room, image: reader.result });
-        const imageData = {
-          room: room,
-          author: username,
-          message: "", // Set message to empty since it's an image
-          time: new Date(Date.now()).getHours() + ":" + new Date(Date.now()).getMinutes(),
-          image: reader.result, // Set the image data
-        };
-        console.log(imageData)
-        setMessageList((list) => [...list, imageData]);
+      if (await verifyImage(file)) {
+        const reader = new FileReader();
+        reader.onloadend = async () => {
+          console.log('2 - Image emitted to upload_image', reader.result);
+          await socket.emit("upload_image", { room: room, image: reader.result });
+          const imageData = {
+            room: room,
+            author: username,
+            message: "", // Set message to empty since it's an image
+            time: new Date(Date.now()).getHours() + ":" + new Date(Date.now()).getMinutes(),
+            image: reader.result, // Set the image data
+          };
+          console.log(imageData)
+          setMessageList((list) => [...list, imageData]);
+        }
+        reader.readAsDataURL(file);
+      } else {
+        toast.error("Image blocked due to inappropriate content");
       }
-      reader.readAsDataURL(file);
     }
     setSelectedImage(null);
   };
@@ -73,16 +102,11 @@ function Chat({ socket, username, room }) {
   }, [socket]);
 
   return (
-    // <div className="white_box">
     <div className="chat-window">
       <div className="chat-header">
-        {/*<p align="center">CHAT ROOM <span>{room}</span></p>*/}
         <p align="center">CHAT ROOM <span style={{ color: "#FFE5B4", float: "right" }}>{room}</span>
-
           <span style={{ color: "#FFE5B4", float: "left" }}>Chatting as: {username}</span>
         </p>
-
-
       </div>
       <div className="chat-body">
         <ScrollToBottom className="message-container">
@@ -101,7 +125,6 @@ function Chat({ socket, username, room }) {
                   <div className="message-meta">
                     <p id="time">{messageContent.time}</p>
                     <p id="author">{messageContent.author}</p>
-                    {/*<p id="room">{messageContent.room}</p>*/}
                   </div>
                 </div>
               </div>
@@ -134,7 +157,6 @@ function Chat({ socket, username, room }) {
         <button onClick={sendMessage}>&#10148;</button>
       </div>
     </div>
-    // </div>
   );
 }
 
