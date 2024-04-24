@@ -8,6 +8,7 @@ function Chat({ socket, username, room }) {
   const [currentMessage, setCurrentMessage] = useState("");
   const [messageList, setMessageList] = useState([]);
   const [selectedImage, setSelectedImage] = useState(null);
+  const [selectedVideo, setSelectedVideo] = useState(null);
 
   const sendMessage = async () => {
     const isToxic = await moderateMessage(currentMessage)
@@ -21,6 +22,7 @@ function Chat({ socket, username, room }) {
           ":" +
           new Date(Date.now()).getMinutes(),
         image: selectedImage ? selectedImage : null,
+        video: selectedVideo ? selectedVideo : null,
       };
 
       await socket.emit("send_message", messageData);
@@ -56,9 +58,54 @@ function Chat({ socket, username, room }) {
     }
   }
 
+  const verifyVideo = async (video) => {
+    const formData = new FormData();
+    formData.append("providers", "google");
+    formData.append("file", video);
+
+    const options = {
+      method: 'POST',
+      url: 'https://api.edenai.run/v2/video/explicit_content_detection_async',
+      headers: {
+        accept: 'application/json',
+        'content-type': 'application/json',
+        authorization: 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjoiNzBlNTg1Y2ItMmVhMC00YzNhLWIyYjctOTdlNTcyNzFmOWVlIiwidHlwZSI6ImFwaV90b2tlbiJ9.O69hZ8NqtxclmsYj0vxzrD18gjc1jjxeT4rKxCjvSaU'
+      },
+      data: { show_original_response: false }
+    };
+
+    try {
+      const response = await axios.request(options);
+      console.log(response.data);
+      // Process the response and determine if the video should be blocked
+      const blocked = response.data.google?.nsfw_likelihood >= 3 || response.data['eden-ai']?.nsfw_likelihood >= 3;
+      return !blocked
+
+    } catch (error) {
+      console.error(error);
+      // toast.error('Error processing video. Please try again.');
+    }
+  }
+
+  function handleFileUpload(event) {
+    if (event.target.files?.length > 0) {
+      console.log("event.target",event.target.files[0])
+      const file = event.target.files[0];
+      console.log("file",file)
+      if (file.type.startsWith('image/')) {
+        console.log("image")
+        handleImageUpload(event);
+      } else if (file.type.startsWith('video/')) {
+        console.log("video")
+        handleVideoUpload(event);
+      }
+    }
+  }
+
   const handleImageUpload = async (event) => {
     console.log('1 - Image uploaded function');
     const file = event.target.files[0];
+    console.log('aksdnfkjsnldkfnsf')
     if (file) {
       if (await verifyImage(file)) {
         const reader = new FileReader();
@@ -83,6 +130,33 @@ function Chat({ socket, username, room }) {
     setSelectedImage(null);
   };
 
+  const handleVideoUpload = async (event) => {
+    console.log('1 - Video uploaded function');
+    const file = event.target.files[0];
+    if (file) {
+      if (await verifyVideo(file)) {
+        const reader = new FileReader();
+        reader.onloadend = async () => {
+          console.log('2 - Video emitted to upload_video', reader.result);
+          await socket.emit("upload_video", { room: room, video: reader.result });
+          const videoData = {
+            room: room,
+            author: username,
+            message: "", // Set message to empty since it's an video
+            time: new Date(Date.now()).getHours() + ":" + new Date(Date.now()).getMinutes(),
+            video: reader.result, // Set the video data
+          };
+          console.log(videoData)
+          setMessageList((list) => [...list, videoData]);
+        }
+        reader.readAsDataURL(file);
+      } else {
+        toast.error("Video blocked due to inappropriate content");
+      }
+    }
+    setSelectedVideo(null);
+  };
+
   useEffect(() => {
     socket.on("receive_message", (data) => {
       setMessageList((list) => [...list, data]);
@@ -98,6 +172,18 @@ function Chat({ socket, username, room }) {
       };
       console.log('4 - Image received from server', data);
       setMessageList((list) => [...list, imageData]);
+    });
+
+    socket.on("receive_video", (data) => {
+      const videoData = {
+        room: data.room,
+        author: data.username,
+        message: "", // Set message to empty since it's an video
+        time: new Date(Date.now()).getHours() + ":" + new Date(Date.now()).getMinutes(),
+        video: data.video, // Set the video data
+      };
+      console.log('4 - Video received from server', data);
+      setMessageList((list) => [...list, videoData]);
     });
   }, [socket]);
 
@@ -121,6 +207,7 @@ function Chat({ socket, username, room }) {
                   <div className="message-content">
                     <p>{messageContent.message}</p>
                     {messageContent.image && <img id="upload-image" src={messageContent.image} alt="" />}
+                    {messageContent.video && <video id="upload-video" src={messageContent.video} controls />}
                   </div>
                   <div className="message-meta">
                     <p id="time">{messageContent.time}</p>
@@ -148,7 +235,7 @@ function Chat({ socket, username, room }) {
           type="file"
           id="fileInput"
           style={{ display: 'none' }}
-          onChange={handleImageUpload}
+          onChange={handleFileUpload}
         />
         <button
           id="image-upload-button"

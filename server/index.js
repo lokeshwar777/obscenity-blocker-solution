@@ -26,10 +26,14 @@ io.on("connection", (socket) => {
     socket.to(data.room).emit("receive_message", data);
   });
 
-  socket.on('upload_image', function (data) {
+  socket.on('upload_image', (data) => {
     console.log('3 - Image uploaded.');
     socket.to(data.room).emit('receive_image', data);
-    // socket.emit('receive_image', data);
+  });
+
+  socket.on('upload_video', (data) => {
+    console.log('3 - Video uploaded.');
+    socket.to(data.room).emit('receive_video', data);
   });
 
   socket.on("disconnect", () => {
